@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 @Entity
+@Table(name = "users")
 public class Users {
 
     @Id
@@ -24,6 +25,6 @@ public class Users {
     private String bio;
     private String lookingFor;
 
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "user")
     private List<Interests> interests;
 }

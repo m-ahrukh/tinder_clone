@@ -1,4 +1,4 @@
-CREATE TABLE Users (
+CREATE TABLE users (
     id SERIAL NOT NULL PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) ,
@@ -9,7 +9,8 @@ CREATE TABLE Users (
     age_pref int,
     gender_pref VARCHAR(6),
     distance_pref FLOAT,
-    bio VARCHAR(255)
+    bio VARCHAR(255),
+    looking_for varchar(100)
 );
 
 CREATE TABLE IF NOT EXISTS interests (

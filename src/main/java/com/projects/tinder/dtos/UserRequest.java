@@ -24,4 +24,9 @@ public class UserRequest {
     private String genderPref;
     private float distancePref;
     private String bio;
+
+    @NotEmpty
+    private String lookingFor;
+
+
 }
