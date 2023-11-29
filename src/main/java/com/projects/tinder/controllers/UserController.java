@@ -1,10 +1,6 @@
 package com.projects.tinder.controllers;
 
-import com.projects.tinder.dtos.ErrorResponse;
-import com.projects.tinder.dtos.InterestDTO;
-import com.projects.tinder.dtos.InterestRequest;
-import com.projects.tinder.dtos.UserDTO;
-import com.projects.tinder.dtos.UserRequest;
+import com.projects.tinder.dtos.*;
 import com.projects.tinder.entities.Users;
 import com.projects.tinder.exceptions.UserNotFound;
 import com.projects.tinder.services.UserService;
@@ -13,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
@@ -25,10 +22,21 @@ public class UserController {
 
     private final UserService service;
 
-    @PostMapping("/sign-in")
+    @PostMapping("/register")
     public UserDTO registerUser(@RequestBody @Valid UserRequest request){
         System.out.println(request);
         return service.registerUSer(request);
+    }
+
+    @PostMapping("/sign-in")
+    public Users login(@RequestBody @Valid UserLogin request){
+        return service.login(request);
+    }
+
+    @Transactional
+    @DeleteMapping("/{username}")
+    public UserDTO deleteUserByUsername(@PathVariable @Valid String username){
+        return service.deleteUserByUsername(username);
     }
 
     @GetMapping("/{userId}")

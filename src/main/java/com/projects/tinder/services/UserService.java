@@ -1,9 +1,6 @@
 package com.projects.tinder.services;
 
-import com.projects.tinder.dtos.InterestDTO;
-import com.projects.tinder.dtos.InterestRequest;
-import com.projects.tinder.dtos.UserDTO;
-import com.projects.tinder.dtos.UserRequest;
+import com.projects.tinder.dtos.*;
 import com.projects.tinder.entities.Interests;
 import com.projects.tinder.entities.Users;
 import com.projects.tinder.exceptions.UserNotFound;
@@ -76,5 +73,31 @@ public class UserService {
         Optional<Users> optionalUser = repository.findById(userId);
         return optionalUser.orElseThrow(() -> new UserNotFound("User not found with id "+ userId));
 
+    }
+
+    public Users login(UserLogin request) {
+        Optional<Users> optionalUser = repository.findByUsername(request.getUsername());
+
+        if(optionalUser.isEmpty()){
+            throw new UserNotFound("User not found with username "+ request.getUsername());
+        }
+
+        return optionalUser.get();
+    }
+
+    public UserDTO deleteUserByUsername(String username) {
+
+        Optional<Users> optionalUser = repository.findByUsername(username);
+        if(optionalUser.isEmpty()){
+            throw new UserNotFound("User not found with username "+ username);
+        }
+
+        Users user = optionalUser.get();
+        Long userId = user.getId();
+
+        Optional<Interests> optionalInterest = interestRepository.deleteByUserId(userId);
+        repository.delete(user);
+
+        return mapper.map(user, UserDTO.class);
     }
 }
