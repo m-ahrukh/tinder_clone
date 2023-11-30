@@ -100,4 +100,62 @@ public class UserService {
 
         return mapper.map(user, UserDTO.class);
     }
+
+    public UserRequest updateUSer(UserRequest request, Long userId) {
+
+        Optional<Users> optionalUser = repository.findById(userId);
+        if(optionalUser.isEmpty()){
+            throw new UserNotFound("User not found with id "+userId);
+        }
+
+        Users user = optionalUser.get();
+
+        if(request.getFirstName() != null){
+            user.setFirstName(request.getFirstName());
+        }
+        if(request.getLastName() != null){
+            user.setLastName(request.getLastName());
+        }
+        if(request.getUsername() != null){
+            user.setUsername(request.getUsername());
+        }
+        if(request.getEmail() != null){
+            user.setEmail(request.getEmail());
+        }
+        if(request.getPassword() != null){
+            user.setPassword(request.getPassword());
+        }
+        if(request.getPhoneNumber() != null){
+            user.setPhoneNumber(request.getPhoneNumber());
+        }
+        if(request.getAgePref() > 0){
+            user.setAgePref(request.getAgePref());
+        }
+        if(request.getGenderPref() != null){
+            user.setGenderPref(request.getGenderPref());
+        }
+        if(request.getDistancePref() >= 0){
+            user.setDistancePref(request.getDistancePref());
+        }
+        if(request.getBio() != null){
+            user.setBio(request.getBio());
+        }
+        if(request.getLookingFor() != null){
+            user.setLookingFor(request.getLookingFor());
+        }
+        repository.saveAndFlush(user);
+        return mapper.map(user, UserRequest.class);
+    }
+
+    public InterestDTO deleteInterest(Long userId, Long interestId) {
+        Optional<Interests> optionalInterest = interestRepository.findById(interestId);
+
+        if(optionalInterest.isEmpty()){
+            return null;
+        }
+
+        Interests interest = optionalInterest.get();
+        interestRepository.delete(interest);
+        return mapper.map(interest, InterestDTO.class);
+    }
 }

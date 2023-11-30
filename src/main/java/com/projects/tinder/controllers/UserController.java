@@ -2,6 +2,7 @@ package com.projects.tinder.controllers;
 
 import com.projects.tinder.dtos.*;
 import com.projects.tinder.entities.Users;
+import com.projects.tinder.exceptions.InterestNotFound;
 import com.projects.tinder.exceptions.UserNotFound;
 import com.projects.tinder.services.UserService;
 import jakarta.validation.Valid;
@@ -45,6 +46,11 @@ public class UserController {
         return service.getUser(userId);
     }
 
+    @PatchMapping("/{userId}")
+    public UserRequest updateUser(@RequestBody UserRequest request, @PathVariable Long userId){
+        return service.updateUSer(request, userId);
+    }
+
     @PostMapping("/user/{userId}/interest")
     public InterestDTO addInterests(@PathVariable Long userId, @RequestBody InterestRequest request){
         System.out.println(userId);
@@ -54,6 +60,11 @@ public class UserController {
     @GetMapping("/user/{userId}")
     public List<InterestRequest> getInterestsOfUser(@PathVariable Long userId){
         return service.getInterestOfUser(userId);
+    }
+
+    @DeleteMapping("/{userId}interest/{interestId}/")
+    public InterestDTO deleteInterest(@PathVariable Long userId, @PathVariable Long interestId){
+        return service.deleteInterest(userId, interestId);
     }
 
     private ResponseEntity<ErrorResponse> buildErrorResponse(Exception exception, HttpStatus httpStatus) {
@@ -67,7 +78,14 @@ public class UserController {
 
     @ExceptionHandler(UserNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handleItemNotFoundException(UserNotFound exception, WebRequest request){
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFound exception, WebRequest request){
+        log.info("Failed to find the requested element", exception);
+        return buildErrorResponse(exception, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InterestNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponse> handleInterestNotFoundException(InterestNotFound exception, WebRequest request){
         log.info("Failed to find the requested element", exception);
         return buildErrorResponse(exception, HttpStatus.NOT_FOUND);
     }
